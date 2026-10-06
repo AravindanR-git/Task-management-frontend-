@@ -2,6 +2,18 @@ import axios from "axios";
 
 // Use correct port — must match your backend
 const API_BASE_URL = "https://task-management-backend-qmfb.onrender.com";
+export const wakeUpServer = async () => {
+  try {
+    const response = await fetch(`${API_URL}/`, {
+      method: "GET",
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error("Backend is not available:", error);
+    return false;
+  }
+};
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
