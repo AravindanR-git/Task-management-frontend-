@@ -4,10 +4,35 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.js";
 import SignupPage from "./pages/SignupPage.js";
 import DashboardPage from "./pages/DashboardPage.js";
+import { useEffect, useState } from "react";
+import ServerLoading from "./components/ServerLoading";
+import { wakeUpServer } from "./services/api";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const [serverReady, setServerReady] = useState(false);
+
+useEffect(() => {
+  let cancelled = false;
+
+  const checkServer = async () => {
+    const ready = await wakeUpServer();
+
+    if (!cancelled && ready) {
+      setServerReady(true);
+    }
+  };
+
+  checkServer();
+  if (!serverReady) {
+  return <ServerLoading />;
+}
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
